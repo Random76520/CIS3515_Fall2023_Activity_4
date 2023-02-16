@@ -29,19 +29,26 @@ class MainActivity : AppCompatActivity() {
             Log.d("Array Values", textSizes[i].toString())
         }
 
-        textSizeSelector.adapter = TextSizeAdapter(textSizes)
+        textSizeSelector.adapter = TextSizeAdapter(textSizes) {
+            textSizeDisplay.textSize = it
+        }
         textSizeSelector.layoutManager = LinearLayoutManager(this)
     }
 }
 
 
 /* Convert to RecyclerView.Adapter */
-class TextSizeAdapter(_textSizes: Array<Int>): RecyclerView.Adapter<TextSizeAdapter.TextSizeViewHolder>() {
+class TextSizeAdapter(_textSizes: Array<Int>, _callback: (Float) -> Unit): RecyclerView.Adapter<TextSizeAdapter.TextSizeViewHolder>() {
 
-    private val textSizes = _textSizes
+    val textSizes = _textSizes
+    val callback = _callback
 
-    class TextSizeViewHolder(view: TextView): RecyclerView.ViewHolder(view) {
+    inner class TextSizeViewHolder(view: TextView): RecyclerView.ViewHolder(view) {
         val textView = view
+
+        init {
+            textView.setOnClickListener {callback(textSizes[adapterPosition].toFloat())}
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TextSizeViewHolder {
